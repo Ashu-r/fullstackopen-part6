@@ -5,7 +5,18 @@ import { newNotification } from '../reducers/notificationReducer';
 
 const AnecdoteList = () => {
 	const dispatch = useDispatch();
-	const anecdotes = useSelector((state) => state.anecdotes);
+	const anecdotes = useSelector((state) => {
+		if (state.filter === 'ALL') {
+			return state.anecdotes;
+		}
+		return state.anecdotes.filter((ane) => {
+			return (
+				ane.content
+					.toLowerCase()
+					.indexOf(state.filter.toLowerCase()) !== -1
+			);
+		});
+	});
 	const vote = (id, content) => {
 		console.log('vote', id);
 		dispatch(addVote(id));
