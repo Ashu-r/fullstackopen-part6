@@ -1,7 +1,15 @@
-export const newNotification = (message) => {
-	return {
-		type: 'new',
-		message,
+export const newNotification = (message, time) => {
+	return (dispatch) => {
+		dispatch({
+			type: 'new',
+			message,
+		});
+		setTimeout(() => {
+			dispatch({
+				type: 'new',
+				message: '',
+			});
+		}, time * 1000);
 	};
 };
 

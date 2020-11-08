@@ -1,21 +1,35 @@
-export const createAnecdote = (data) => {
-	return {
-		type: 'NEW_ANECDOTE',
-		data,
+import anecdoteService from '../services/anecdotes';
+
+export const createAnecdote = (content) => {
+	return async (dispatch) => {
+		const newAnecdote = await anecdoteService.createNew(content);
+		console.log(newAnecdote);
+		dispatch({
+			type: 'NEW_ANECDOTE',
+			data: newAnecdote,
+		});
 	};
 };
 
 export const addVote = (id) => {
-	return {
-		type: 'ADD_VOTE',
-		id,
+	return async (dispatch) => {
+		const upvotedAnecdote = await anecdoteService.upVote(id);
+
+		dispatch({
+			type: 'ADD_VOTE',
+			id,
+		});
 	};
 };
 
 export const initializeAnecdotes = (ane) => {
-	return {
-		type: 'INIT_ANECDOTE',
-		data: ane,
+	return async (dispatch) => {
+		const anecdotes = await anecdoteService.getAll();
+
+		dispatch({
+			type: 'INIT_ANECDOTE',
+			data: anecdotes,
+		});
 	};
 };
 
