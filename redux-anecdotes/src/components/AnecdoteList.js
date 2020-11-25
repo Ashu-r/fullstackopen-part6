@@ -1,22 +1,23 @@
+/* eslint-disable react/jsx-indent */
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, connect } from 'react-redux';
 import { addVote } from '../reducers/anecdoteReducer';
 import { newNotification } from '../reducers/notificationReducer';
 
-const AnecdoteList = () => {
+const AnecdoteList = (props) => {
 	const dispatch = useDispatch();
-	const anecdotes = useSelector((state) => {
-		if (state.filter === 'ALL') {
-			return state.anecdotes;
+	const anecdotesToShow = () => {
+		if (props.filter === 'ALL') {
+			return props.anecdotes;
 		}
-		return state.anecdotes.filter((ane) => {
+		return props.anecdotes.filter((ane) => {
 			return (
 				ane.content
 					.toLowerCase()
-					.indexOf(state.filter.toLowerCase()) !== -1
+					.indexOf(props.filter.toLowerCase()) !== -1
 			);
 		});
-	});
+	};
 	const vote = (anecdote) => {
 		dispatch(addVote(anecdote.id));
 		dispatch(newNotification(`You voted ${anecdote.content}`, 2));
@@ -25,7 +26,7 @@ const AnecdoteList = () => {
 	return (
 		<div>
 			<h2>Anecdotes</h2>
-			{anecdotes
+			{anecdotesToShow()
 				.sort((a, b) => a.votes < b.votes)
 				.map((anecdote) => (
 					<div key={anecdote.id}>
@@ -39,4 +40,13 @@ const AnecdoteList = () => {
 		</div>
 	);
 };
-export default AnecdoteList;
+
+const mapStateToProps = (state) => {
+	return {
+		anecdotes: state.anecdotes,
+		filter: state.filter,
+	};
+};
+
+const connectedAnecdoteList = connect(mapStateToProps)(AnecdoteList);
+export default connectedAnecdoteList;
