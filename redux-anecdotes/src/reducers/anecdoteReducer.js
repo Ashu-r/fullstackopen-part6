@@ -13,7 +13,7 @@ export const createAnecdote = (content) => {
 
 export const addVote = (id) => {
 	return async (dispatch) => {
-		const upvotedAnecdote = await anecdoteService.upVote(id);
+		await anecdoteService.upVote(id);
 
 		dispatch({
 			type: 'ADD_VOTE',

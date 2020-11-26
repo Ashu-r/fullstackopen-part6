@@ -1,32 +1,21 @@
 /* eslint-disable react/jsx-indent */
 import React from 'react';
-import { useDispatch, connect } from 'react-redux';
+import { connect } from 'react-redux';
 import { addVote } from '../reducers/anecdoteReducer';
 import { newNotification } from '../reducers/notificationReducer';
 
 const AnecdoteList = (props) => {
-	const dispatch = useDispatch();
-	const anecdotesToShow = () => {
-		if (props.filter === 'ALL') {
-			return props.anecdotes;
-		}
-		return props.anecdotes.filter((ane) => {
-			return (
-				ane.content
-					.toLowerCase()
-					.indexOf(props.filter.toLowerCase()) !== -1
-			);
-		});
-	};
+	console.log(props);
+
 	const vote = (anecdote) => {
-		dispatch(addVote(anecdote.id));
-		dispatch(newNotification(`You voted ${anecdote.content}`, 2));
+		props.addVote(anecdote.id);
+		props.newNotification(`You voted ${anecdote.content}`, 5);
 	};
 
 	return (
 		<div>
 			<h2>Anecdotes</h2>
-			{anecdotesToShow()
+			{props.anecdotes
 				.sort((a, b) => a.votes < b.votes)
 				.map((anecdote) => (
 					<div key={anecdote.id}>
@@ -42,11 +31,27 @@ const AnecdoteList = (props) => {
 };
 
 const mapStateToProps = (state) => {
+	if (state.filter === 'ALL') {
+		return { anecdotes: state.anecdotes };
+	}
 	return {
-		anecdotes: state.anecdotes,
-		filter: state.filter,
+		anecdotes: state.anecdotes.filter((ane) => {
+			return (
+				ane.content
+					.toLowerCase()
+					.indexOf(state.filter.toLowerCase()) !== -1
+			);
+		}),
 	};
 };
 
-const connectedAnecdoteList = connect(mapStateToProps)(AnecdoteList);
+const mapDispatchToProps = {
+	addVote,
+	newNotification,
+};
+
+const connectedAnecdoteList = connect(
+	mapStateToProps,
+	mapDispatchToProps
+)(AnecdoteList);
 export default connectedAnecdoteList;

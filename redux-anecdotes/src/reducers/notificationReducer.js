@@ -1,15 +1,18 @@
+let timeoutID;
 export const newNotification = (message, time) => {
 	return (dispatch) => {
+		clearTimeout(timeoutID);
 		dispatch({
 			type: 'new',
 			message,
 		});
-		setTimeout(() => {
+		timeoutID = setTimeout(() => {
 			dispatch({
 				type: 'new',
 				message: '',
 			});
 		}, time * 1000);
+		console.log(timeoutID);
 	};
 };
 
